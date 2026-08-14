@@ -7,6 +7,7 @@ app.use(express.json());
 app.use("/", require("./routes/home"));
 app.use("/track.com/api/users", require("./routes/users"));
 app.use("/track.com/api/cards", require("./routes/cards"));
+app.use("/track.com/api/expenses", require("./routes/expenses"));
 
 const MONGODB_URI = "mongodb://localhost:27017/swiftexpensedb";
 const PORT = 3000;
