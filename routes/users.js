@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const { User, validate } = require("../models/users");
+const { User, validateUser } = require("../models/users");
 
 router.get("/:id", async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
@@ -9,7 +9,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
+  const { error } = validateUser(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }

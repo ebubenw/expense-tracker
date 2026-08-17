@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Expense } = require("../models/expenses");
+const { Expense, validateExpense } = require("../models/expenses");
 
 router.get("/:cardId/:userId", async (req, res) => {
   const expenses = await Expense.find({
@@ -10,7 +10,11 @@ router.get("/:cardId/:userId", async (req, res) => {
   res.json(expenses);
 });
 
-router.post("/", async (req, res) => {
+router.post("/:cardId/:userId", async (req, res) => {
+  const { error } = validateExpense(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
   const expense = new Expense({
     cardId: req.body.cardId,
     userId: req.body.userId,
