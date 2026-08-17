@@ -1,15 +1,27 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
-const { Card } = require("../models/cards");
+const { Card, validateCard } = require("../models/cards");
 const { User } = require("../models/users");
 
 router.get("/:userId", async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    return res.status(400).send("Invalid user ID.");
+  }
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return res.status(400).send("User with this ID does not exist.");
+  }
   const cards = await Card.find({ userId: req.params.userId });
   res.send(cards);
 });
 
 router.post("/", async (req, res) => {
-  let user = User.findById(req.body.userId);
+  const { error } = validateCard(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+  let user = await User.findById(req.body.userId);
   if (!user) {
     return res.status(400).send("User with this ID does not exist.");
   }
