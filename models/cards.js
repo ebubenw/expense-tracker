@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const cardSchema = new mongoose.Schema({
   userId: {
@@ -19,5 +20,15 @@ const cardSchema = new mongoose.Schema({
 
 const Card = mongoose.model("Card", cardSchema);
 
+function validateCard(card) {
+  const schema = Joi.object({
+    userId: Joi.string().required(),
+    cardName: Joi.string().required(),
+    cardNumber: Joi.string().required(),
+  });
+  return schema.validate(card);
+}
+
 exports.cardSchema = cardSchema;
+exports.validateCard = validateCard;
 exports.Card = Card;

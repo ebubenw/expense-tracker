@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const expenseSchema = new mongoose.Schema({
   cardId: {
@@ -31,5 +32,18 @@ const expenseSchema = new mongoose.Schema({
 
 const Expense = mongoose.model("Expense", expenseSchema);
 
+function validateExpense(expense) {
+  const schema = Joi.object({
+    cardId: Joi.string().required(),
+    userId: Joi.string().required(),
+    amount: Joi.number().required(),
+    category: Joi.string().required(),
+    description: Joi.string().required(),
+    date: Joi.date(),
+  });
+  return schema.validate(expense);
+}
+
 exports.expenseSchema = expenseSchema;
+exports.validateExpense = validateExpense;
 exports.Expense = Expense;
